@@ -9,9 +9,8 @@ var https = require('https');
 var purl = require('url');
 
 var host = 'turingames.fr';
-var username = 'dummy';
+var username = "";
 var token = "";
-//var method = "POST";
 
 function performRequest(path, method, data, success) {
 	var dataString = JSON.stringify(data);
@@ -44,9 +43,17 @@ function performRequest(path, method, data, success) {
 		});
 
 		res.on('end', function() {
-			console.log(responseString);
-			var responseObject = JSON.parse(responseString);
-			success(responseObject);
+			console.log("response: " + responseString);
+			if (responseString != "Internal Server Error"){
+				var responseObject = JSON.parse(responseString);
+				success(responseObject);
+			}
+			else
+				console.log("Couldn't connect...")
+		});
+
+		res.on('err', function(err) {
+			console.log("[ERROR]: " + err);
 		});
 	});
 
@@ -54,7 +61,25 @@ function performRequest(path, method, data, success) {
 	req.end();
 }
 
-performRequest("/api/connect","POST",{name: username, token: token},function(res){
-	console.log("yes we did it: " + res);
-});
+function	conversation(res){
+	console.log("answer: " + res.answer);
+	if (res.query == "close")
+		return ;
+	var toSend = {
+		name: username,
+		token: token,
+		lobby: res.match,
+		message: "you're bot's answer"
+	}
+	performRequest("/api/answer", "POST", toSend, conversation)
+}
 
+performRequest("/api/connect","POST",{name: username, token: token},function(res){
+	console.log("Starting new match: " + res.match);
+	var toSend = {
+		name: username,
+		token: token,
+		lobby: res.match
+	}
+	performRequest("/api/join", "POST", toSend, conversation);
+});
