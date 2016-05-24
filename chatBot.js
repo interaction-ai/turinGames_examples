@@ -9,8 +9,7 @@ var https = require('https');
 var purl = require('url');
 
 var host = 'turingames.fr';
-var port = 9001;
-var username = 'r';
+var username = 'dummy';
 var token = "";
 //var method = "POST";
 
@@ -27,10 +26,10 @@ function performRequest(path, method, data, success) {
 			'Content-Length': dataString.length
 		};
 	}
+	console.log(path);
 	var options = {
 		host: host,
 		path: path,
-		port: port,
 		method: method,
 		headers: headers
 	};
@@ -55,7 +54,7 @@ function performRequest(path, method, data, success) {
 	req.end();
 }
 
-performRequest(host + "/connect","POST",{name: username, token: token},function(res){
+performRequest("/api/connect","POST",{name: username, token: token},function(res){
 	console.log("yes we did it: " + res);
 });
 
