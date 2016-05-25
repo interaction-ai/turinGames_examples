@@ -9,8 +9,31 @@ var https = require('https');
 var purl = require('url');
 
 var host = 'turingames.fr';
+
+/********************************************************************************/
+/*			Customizable						*/
+/********************************************************************************/
+
+
+// put your username and token here
 var username = "";
 var token = "";
+
+// here is the function you want to hack to plug your bot
+function	conversation(res){
+	console.log("answer: " + res.answer);
+	if (res.query == "close")
+		return ;
+	var toSend = {
+		name: username,
+		token: token,
+		lobby: res.match,
+		message: "you're bot's answer"
+	}
+	performRequest("/api/answer", "POST", toSend, conversation)
+}
+
+/********************************************************************************/
 
 function performRequest(path, method, data, success) {
 	var dataString = JSON.stringify(data);
@@ -61,25 +84,13 @@ function performRequest(path, method, data, success) {
 	req.end();
 }
 
-function	conversation(res){
-	console.log("answer: " + res.answer);
-	if (res.query == "close")
-		return ;
-	var toSend = {
-		name: username,
-		token: token,
-		lobby: res.match,
-		message: "you're bot's answer"
-	}
-	performRequest("/api/answer", "POST", toSend, conversation)
-}
 
 performRequest("/api/connect","POST",{name: username, token: token},function(res){
 	console.log("Starting new match: " + res.match);
 	var toSend = {
 		name: username,
 		token: token,
-		lobby: res.match
+		lobby: res.match,
 	}
 	performRequest("/api/join", "POST", toSend, conversation);
 });
