@@ -18,6 +18,7 @@ var host = 'turingames.fr';
 // put your username and token here
 var username = "";
 var token = "";
+// here is the total number of conversation your bot will have (100)
 var numberInterAction = 100;
 
 // here is the function you want to hack to plug your bot
