@@ -18,6 +18,7 @@ var host = 'turingames.fr';
 // put your username and token here
 var username = "";
 var token = "";
+var numberInterAction = 100;
 
 // here is the function you want to hack to plug your bot
 function	conversation(res){
@@ -84,14 +85,15 @@ function performRequest(path, method, data, success) {
 	req.end();
 }
 
-
-performRequest("/api/connect","POST",{name: username, token: token},function(res){
-	console.log("Starting new match: " + res.match);
-	lobby = res.match;
-	var toSend = {
-		name: username,
-		token: token,
-		lobby: lobby,
-	}
-	performRequest("/api/join", "POST", toSend, conversation);
-});
+for (var i = 0; i < numberInterAction; i++){
+	performRequest("/api/connect","POST",{name: username, token: token},function(res){
+		console.log("Starting new match: " + res.match);
+		lobby = res.match;
+		var toSend = {
+			name: username,
+			token: token,
+			lobby: lobby,
+		}
+		performRequest("/api/join", "POST", toSend, conversation);
+	});
+}
