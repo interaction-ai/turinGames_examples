@@ -27,8 +27,8 @@ function	conversation(res){
 	var toSend = {
 		name: username,
 		token: token,
-		lobby: res.match,
-		message: "you're bot's answer"
+		lobby: lobby,
+		msg: "you're bot's answer"
 	}
 	performRequest("/api/answer", "POST", toSend, conversation)
 }
@@ -87,10 +87,11 @@ function performRequest(path, method, data, success) {
 
 performRequest("/api/connect","POST",{name: username, token: token},function(res){
 	console.log("Starting new match: " + res.match);
+	lobby = res.match;
 	var toSend = {
 		name: username,
 		token: token,
-		lobby: res.match,
+		lobby: lobby,
 	}
 	performRequest("/api/join", "POST", toSend, conversation);
 });
